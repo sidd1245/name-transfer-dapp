@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DApp with Name Service</title>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.6.0/dist/ethers.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #121212;
+      color: #f0f0f0;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #1f1f1f;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h2 { margin: 0; }
+    button {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover { background: #45a049; }
+    .tabs {
+      display: flex;
+      justify-content: center;
+      background: #222;
+    }
+    .tabs button {
+      flex: 1;
+      background: #222;
+      border: none;
+      padding: 12px;
+      cursor: pointer;
+      color: #fff;
+    }
+    .tabs button.active { background: #4CAF50; }
+    .tab-content {
+      display: none;
+      padding: 20px;
+    }
+    .tab-content.active { display: block; }
+    input {
+      padding: 8px;
+      margin: 5px;
+      border-radius: 4px;
+      border: none;
+    }
+    ul { list-style: none; padding: 0; }
+    li {
+      background: #1f1f1f;
+      margin: 5px 0;
+      padding: 10px;
+      border-radius: 6px;
+      text-align: left;
+    }
+    .summary { cursor: pointer; }
+    .details { font-size: 13px; color: #ccc; margin-top: 8px; }
+    .copy-btn {
+      margin-left: 10px;
+      padding: 3px 6px;
+      font-size: 12px;
+      border-radius: 4px;
+      background: #555;
+    }
+    /* Balance card styling */
+    .wallet-card {
+      max-width: 400px;
+      margin: 20px auto;
+      padding: 20px;
+      background: #1f1f1f;
+      border-radius: 10px;
+      text-align: center;
+    }
+    .wallet-line {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .wallet-line p {
+      margin: 0;
+      font-size: 14px;
+    }
+    #qrcode {
+      margin: 15px auto;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h2>DApp Name Service</h2>
+    <button id="connectButton">Connect Wallet</button>
+  </header>
+
+  <div class="tabs">
+    <button class="tablink active" data-tab="balance">Balance</button>
+    <button class="tablink" data-tab="register" id="registerTab">Register</button>
+    <button class="tablink" data-tab="send">Send</button>
+    <button class="tablink" data-tab="find">Find</button>
+    <button class="tablink" data-tab="history">History</button>
+  </div>
+
+  <div id="balance" class="tab-content active">
+    <div class="wallet-card">
+      <div class="wallet-line">
+        <p id="walletAddress">Not connected</p>
+        <button class="copy-btn" onclick="copyToClipboard(userAddress)">📋 Copy</button>
+      </div>
+      <p id="walletName"></p>
+      <p id="walletBalance"></p>
+      <p id="networkInfo"></p>
+      <canvas id="qrcode"></canvas>
+      <button onclick="refreshBalance()">🔄 Refresh Balance</button>
+    </div>
+  </div>
+
+  <div id="register" class="tab-content">
+    <h3>Register a Name</h3>
+    <input type="text" id="registerInput" placeholder="Enter name">
+    <button id="registerBtn">Register</button>
+    <br><br>
+    <button id="unregisterBtn">Unregister Name</button>
+  </div>
+
+  <div id="send" class="tab-content">
+    <h3>Send Funds</h3>
+    <input type="text" id="sendToName" placeholder="Recipient Name">
+    <input type="number" id="sendAmount" placeholder="Amount in ETH" step="0.0001">
+    <button id="sendBtn">Send</button>
+  </div>
+
+  <div id="find" class="tab-content">
+    <h3>Find</h3>
+    <h4>🔎 Name → Address</h4>
+    <input type="text" id="resolveInput" placeholder="Enter name">
+    <button id="resolveBtn">Resolve</button>
+    <p id="resolveResult"></p>
+    <button class="copy-btn" id="copyResolveBtn" style="display:none;">📋 Copy</button>
+    <canvas id="resolveQr"></canvas>
+    <hr>
+    <h4>🔎 Address → Name</h4>
+    <input type="text" id="reverseInput" placeholder="Enter wallet address">
+    <button id="reverseBtn">Lookup</button>
+    <p id="reverseResult"></p>
+  </div>
+
+  <div id="history" class="tab-content">
+    <h3>Transaction History</h3>
+    <ul id="historyList"></ul>
+  </div>
+
+  <script src="contract.json" type="application/json"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+{
+  "name": "payfolder",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "lite-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sidd1245/name-transfer-dapp.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sidd1245/name-transfer-dapp/issues"
+  },
+  "homepage": "https://github.com/sidd1245/name-transfer-dapp#readme",
+  "dependencies": {
+    "ethers": "^6.15.0"
+  },
+  "devDependencies": {
+    "lite-server": "^2.6.1"
+  }
+}
