@@ -17,8 +17,8 @@ window.onload = async () => {
     btn.onclick = () => openTab(btn.dataset.tab, btn);
   });
 
-  const accounts = await provider.send("eth_accounts", []);
-  if (accounts.length) {
+  const savedAccount = localStorage.getItem("connectedAccount");
+  if (savedAccount) {
     await connectWallet();
   }
 };
@@ -35,6 +35,7 @@ async function connectWallet() {
   await provider.send("eth_requestAccounts", []);
   signer = await provider.getSigner();
   userAddress = await signer.getAddress();
+  localStorage.setItem("connectedAccount", userAddress);
   contract = contract.connect(signer);
 
   document.getElementById("connectButton").innerText = "Disconnect Wallet";
@@ -42,6 +43,7 @@ async function connectWallet() {
 }
 
 function disconnectWallet() {
+  localStorage.removeItem("connectedAccount");
   userAddress = null;
   signer = null;
   document.getElementById("walletAddress").innerText = "Not connected";
@@ -53,8 +55,21 @@ function disconnectWallet() {
 }
 
 async function updateUI() {
-  if (!userAddress) return;
-
+if (!userAddress){
+    document.getElementById("walletAddress").innerText = "⚠️ Connect your wallet first";
+    document.getElementById("walletBalance").innerText = "";
+    document.getElementById("walletName").innerText = "";
+    document.getElementById("networkInfo").innerText = "";
+    const qrCanvas = document.getElementById("qrcode");
+    qrCanvas.getContext("2d").clearRect(0, 0, qrCanvas.width, qrCanvas.height);
+    if (qrCanvas) {
+      qrCanvas.getContext("2d").clearRect(0, 0, qrCanvas.width, qrCanvas.height);
+    }
+    if (copyBtn) copyBtn.style.display = "none";
+    if (refreshBtn) refreshBtn.style.display = "none";
+    if (qrCanvas) qrCanvas.style.display = "none"
+     return;
+  }
   document.getElementById("walletAddress").innerText = `${userAddress}`;
   const balance = await provider.getBalance(userAddress);
   document.getElementById("walletBalance").innerText =
@@ -63,6 +78,10 @@ async function updateUI() {
   const qrCanvas = document.getElementById("qrcode");
   qrCanvas.getContext("2d").clearRect(0, 0, qrCanvas.width, qrCanvas.height);
   QRCode.toCanvas(qrCanvas, userAddress, { width: 180 });
+
+  if (copyBtn) copyBtn.style.display = "inline-block";
+  if (refreshBtn) refreshBtn.style.display = "inline-block";
+  if (qrCanvas) qrCanvas.style.display = "block";
 
   const name = await contract.nameOf(userAddress);
   if (name) {
@@ -78,6 +97,9 @@ async function updateUI() {
 }
 
 async function registerName() {
+  if (!userAddress) {
+    return alert("⚠️ Please connect your wallet before registering a name.");
+  }
   const name = document.getElementById("registerInput").value.trim();
   if (!name) return alert("Enter a name");
   const tx = await contract.registerName(name);
@@ -87,6 +109,9 @@ async function registerName() {
 }
 
 async function unregisterName() {
+  if (!userAddress) {
+    return alert("⚠️ Please connect your wallet first.");
+  }
   try {
     const tx = await contract.unregisterName();
     await tx.wait();
@@ -98,6 +123,9 @@ async function unregisterName() {
 }
 
 async function sendFunds() {
+  if (!userAddress) {
+    return alert("⚠️ Please connect your wallet first.");
+  }
   const toName = document.getElementById("sendToName").value.trim();
   const amount = document.getElementById("sendAmount").value.trim();
   if (!toName || !amount) return alert("Fill all fields");
@@ -147,6 +175,10 @@ async function reverseLookup() {
 async function loadHistory(userAddress) {
   const historyList = document.getElementById("historyList");
   historyList.innerHTML = "";
+  if (!userAddress) {
+    historyList.innerHTML = "<li>⚠️ Connect your wallet first to view transaction history</li>";
+    return;
+  }
   try {
     const logs = await provider.getLogs({
       address: contractData.address,
@@ -162,13 +194,13 @@ async function loadHistory(userAddress) {
         let involved = false;
 
         if (parsed.name === "NameRegistered" &&
-            parsed.args.owner.toLowerCase() === userAddress.toLowerCase()) {
+          parsed.args.owner.toLowerCase() === userAddress.toLowerCase()) {
           summary = `🆕 Registered: ${parsed.args.name}`;
           involved = true;
         }
         if (parsed.name === "SentByName" &&
           (parsed.args.from.toLowerCase() === userAddress.toLowerCase() ||
-           parsed.args.toAddress.toLowerCase() === userAddress.toLowerCase())) {
+            parsed.args.toAddress.toLowerCase() === userAddress.toLowerCase())) {
           summary = `💸 ${ethers.formatEther(parsed.args.amount)} ETH → ${parsed.args.toName}`;
           involved = true;
         }
@@ -205,7 +237,7 @@ async function loadHistory(userAddress) {
 
           historyList.appendChild(li);
         }
-      } catch {}
+      } catch { }
     });
 
     if (historyList.innerHTML === "") {
@@ -221,6 +253,9 @@ function openTab(tabId, btn) {
   document.querySelectorAll(".tablink").forEach(b => b.classList.remove("active"));
   document.getElementById(tabId).classList.add("active");
   btn.classList.add("active");
+  if (tabId === "history") {
+    loadHistory(userAddress);
+  }
 }
 
 function copyToClipboard(text) {
@@ -239,3 +274,7 @@ async function showNetwork() {
 async function refreshBalance() {
   updateUI();
 }
+window.addEventListener("load", () => {
+  updateUI(); // run once when page loads
+});
+

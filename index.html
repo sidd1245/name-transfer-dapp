@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>DApp with Name Service</title>
@@ -14,6 +15,7 @@
       margin: 0;
       padding: 0;
     }
+
     header {
       background: #1f1f1f;
       padding: 15px;
@@ -21,7 +23,11 @@
       justify-content: space-between;
       align-items: center;
     }
-    header h2 { margin: 0; }
+
+    header h2 {
+      margin: 0;
+    }
+
     button {
       background: #4CAF50;
       color: white;
@@ -30,12 +36,17 @@
       border-radius: 6px;
       cursor: pointer;
     }
-    button:hover { background: #45a049; }
+
+    button:hover {
+      background: #45a049;
+    }
+
     .tabs {
       display: flex;
       justify-content: center;
       background: #222;
     }
+
     .tabs button {
       flex: 1;
       background: #222;
@@ -44,19 +55,32 @@
       cursor: pointer;
       color: #fff;
     }
-    .tabs button.active { background: #4CAF50; }
+
+    .tabs button.active {
+      background: #4CAF50;
+    }
+
     .tab-content {
       display: none;
       padding: 20px;
     }
-    .tab-content.active { display: block; }
+
+    .tab-content.active {
+      display: block;
+    }
+
     input {
       padding: 8px;
       margin: 5px;
       border-radius: 4px;
       border: none;
     }
-    ul { list-style: none; padding: 0; }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
     li {
       background: #1f1f1f;
       margin: 5px 0;
@@ -64,8 +88,17 @@
       border-radius: 6px;
       text-align: left;
     }
-    .summary { cursor: pointer; }
-    .details { font-size: 13px; color: #ccc; margin-top: 8px; }
+
+    .summary {
+      cursor: pointer;
+    }
+
+    .details {
+      font-size: 13px;
+      color: #ccc;
+      margin-top: 8px;
+    }
+
     .copy-btn {
       margin-left: 10px;
       padding: 3px 6px;
@@ -73,6 +106,7 @@
       border-radius: 4px;
       background: #555;
     }
+
     /* Balance card styling */
     .wallet-card {
       max-width: 400px;
@@ -82,22 +116,26 @@
       border-radius: 10px;
       text-align: center;
     }
+
     .wallet-line {
       display: flex;
       justify-content: center;
       align-items: center;
       flex-wrap: wrap;
     }
+
     .wallet-line p {
       margin: 0;
       font-size: 14px;
     }
+
     #qrcode {
       margin: 15px auto;
       display: block;
     }
   </style>
 </head>
+
 <body>
   <header>
     <h2>DApp Name Service</h2>
@@ -115,14 +153,14 @@
   <div id="balance" class="tab-content active">
     <div class="wallet-card">
       <div class="wallet-line">
-        <p id="walletAddress">Not connected</p>
-        <button class="copy-btn" onclick="copyToClipboard(userAddress)">📋 Copy</button>
+        <p id="walletAddress">⚠️ Connect your wallet first</p>
+        <button id="copyBtn" class="copy-btn" onclick="copyToClipboard(userAddress)">📋 Copy</button>
       </div>
       <p id="walletName"></p>
       <p id="walletBalance"></p>
       <p id="networkInfo"></p>
       <canvas id="qrcode"></canvas>
-      <button onclick="refreshBalance()">🔄 Refresh Balance</button>
+      <button id="refreshBtn" onclick="refreshBalance()">🔄 Refresh Balance</button>
     </div>
   </div>
 
@@ -164,4 +202,5 @@
   <script src="contract.json" type="application/json"></script>
   <script src="app.js"></script>
 </body>
+
 </html>
