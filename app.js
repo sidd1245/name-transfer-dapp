@@ -102,10 +102,18 @@ async function registerName() {
   }
   const name = document.getElementById("registerInput").value.trim();
   if (!name) return alert("Enter a name");
-  const tx = await contract.registerName(name);
-  await tx.wait();
-  alert(`Name ${name} registered!`);
-  updateUI();
+  try {
+    const tx = await contract.registerName(name);
+    await tx.wait();
+    alert(`✅ Name "${name}" registered successfully!`);
+    updateUI();
+  } catch (err) {
+    if (err.message.includes("name already taken")) {
+      alert("❌ This name is already registered by another wallet. Try a different one.");
+    } else {
+      alert("⚠️ Transaction failed: " + err.message);
+    }
+  }
 }
 
 async function unregisterName() {
