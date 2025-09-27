@@ -8,72 +8,101 @@
   <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #121212;
-      color: #f0f0f0;
-      text-align: center;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
       margin: 0;
       padding: 0;
     }
 
     header {
-      background: #1f1f1f;
-      padding: 15px;
+      background: linear-gradient(135deg, #1f1f1f, #2a2a2a);
+      padding: 15px 25px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
     }
 
     header h2 {
       margin: 0;
+      color: #4CAF50;
+      text-shadow: 0 0 8px rgba(76, 175, 80, 0.6);
     }
 
     button {
-      background: #4CAF50;
+      background: linear-gradient(135deg, #4CAF50, #2E7D32);
       color: white;
       border: none;
       padding: 10px 15px;
       border-radius: 6px;
       cursor: pointer;
+      transition: all 0.2s ease-in-out;
     }
 
     button:hover {
-      background: #45a049;
+      transform: scale(1.05);
+      box-shadow: 0 0 10px rgba(76, 175, 80, 0.6);
     }
 
     .tabs {
       display: flex;
       justify-content: center;
-      background: #222;
+      background: #161b22;
+      border-bottom: 1px solid #2c2c2c;
     }
 
     .tabs button {
       flex: 1;
-      background: #222;
+      background: none;
       border: none;
-      padding: 12px;
+      padding: 14px;
       cursor: pointer;
-      color: #fff;
+      color: #c9d1d9;
+      font-size: 14px;
+      transition: 0.2s;
+    }
+
+    .tabs button:hover {
+      background: #1f1f1f;
     }
 
     .tabs button.active {
-      background: #4CAF50;
+      border-bottom: 3px solid #4CAF50;
+      color: #4CAF50;
+      font-weight: bold;
     }
 
     .tab-content {
       display: none;
       padding: 20px;
+      animation: fadeIn 0.3s ease-in-out;
     }
 
     .tab-content.active {
       display: block;
     }
 
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     input {
-      padding: 8px;
-      margin: 5px;
-      border-radius: 4px;
+      padding: 10px;
+      margin: 6px;
+      border-radius: 6px;
       border: none;
+      background: #21262d;
+      color: #e6edf3;
+      width: 220px;
     }
 
     ul {
@@ -82,38 +111,22 @@
     }
 
     li {
-      background: #1f1f1f;
-      margin: 5px 0;
-      padding: 10px;
-      border-radius: 6px;
+      background: rgba(31, 31, 31, 0.8);
+      margin: 6px 0;
+      padding: 12px;
+      border-radius: 8px;
       text-align: left;
     }
 
-    .summary {
-      cursor: pointer;
-    }
-
-    .details {
-      font-size: 13px;
-      color: #ccc;
-      margin-top: 8px;
-    }
-
-    .copy-btn {
-      margin-left: 10px;
-      padding: 3px 6px;
-      font-size: 12px;
-      border-radius: 4px;
-      background: #555;
-    }
-
-    /* Balance card styling */
-    .wallet-card {
-      max-width: 400px;
+    .wallet-card,
+    .info-card {
+      max-width: 420px;
       margin: 20px auto;
       padding: 20px;
-      background: #1f1f1f;
-      border-radius: 10px;
+      background: rgba(31, 31, 31, 0.6);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(8px);
       text-align: center;
     }
 
@@ -122,6 +135,7 @@
       justify-content: center;
       align-items: center;
       flex-wrap: wrap;
+      gap: 8px;
     }
 
     .wallet-line p {
@@ -133,6 +147,66 @@
       margin: 15px auto;
       display: block;
     }
+
+    .copy-btn {
+      padding: 3px 8px;
+      font-size: 12px;
+      border-radius: 4px;
+      background: #333;
+      transition: 0.2s;
+    }
+
+    .copy-btn:hover {
+      background: #555;
+    }
+
+    .placeholder {
+      font-size: 14px;
+      color: #aaa;
+      margin-top: 10px;
+    }
+    .welcome-card {
+  max-width: 600px;
+  margin: 80px auto;
+  padding: 30px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.welcome-card h1 {
+  font-size: 2rem;
+  color: #90ee90; /* soft green */
+  margin-bottom: 15px;
+}
+
+.welcome-card .highlight {
+  color: #00ffcc; /* accent */
+}
+
+.welcome-card p {
+  font-size: 1.1rem;
+  color: #ddd;
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+
+.welcome-card .note {
+  font-size: 0.9rem;
+  color: #aaa;
+  font-style: italic;
+}
+.form-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px; /* space between inputs & button */
+  margin-top: 20px;
+  flex-wrap: wrap; /* makes it responsive on smaller screens */
+}
+
   </style>
 </head>
 
@@ -141,26 +215,45 @@
     <h2>DApp Name Service</h2>
     <button id="connectButton">Connect Wallet</button>
   </header>
+  <!-- Welcome message when wallet is not connected -->
+  <div id="welcomeMessage" class="welcome-card">
+  <h1>🚀 Welcome to the <span class="highlight">Name Service DApp</span></h1>
+  <p>
+    Connect your wallet to <strong>register a unique name</strong>,  
+    <strong>send ETH by name</strong>, and  
+    <strong>explore your transaction history</strong>.
+  </p>
+  <p class="note">Your wallet must be connected to unlock all features.</p>
+</div>
 
-  <div class="tabs">
-    <button class="tablink active" data-tab="balance">Balance</button>
-    <button class="tablink" data-tab="register" id="registerTab">Register</button>
-    <button class="tablink" data-tab="send">Send</button>
-    <button class="tablink" data-tab="find">Find</button>
-    <button class="tablink" data-tab="history">History</button>
-  </div>
+  <div id="tabs" style="display:none;">
+    <div class="tabs">
+      <button class="tablink active" data-tab="balance">Balance</button>
+      <button class="tablink" data-tab="register" id="registerTab">Register</button>
+      <button class="tablink" data-tab="send">Send</button>
+      <button class="tablink" data-tab="find">Find</button>
+      <button class="tablink" data-tab="history">History</button>
+    </div>
 
-  <div id="balance" class="tab-content active">
-    <div class="wallet-card">
-      <div class="wallet-line">
-        <p id="walletAddress">⚠️ Connect your wallet first</p>
-        <button id="copyBtn" class="copy-btn" onclick="copyToClipboard(userAddress)">📋 Copy</button>
+
+    <div id="balance" class="tab-content active">
+      <!-- Disconnected Warning -->
+      <div id="warningSection">
+        <p>⚠️ Connect your wallet first</p>
       </div>
-      <p id="walletName"></p>
-      <p id="walletBalance"></p>
-      <p id="networkInfo"></p>
-      <canvas id="qrcode"></canvas>
-      <button id="refreshBtn" onclick="refreshBalance()">🔄 Refresh Balance</button>
+
+      <!-- Connected Wallet Card -->
+      <div id="balanceSection" class="wallet-card" style="display:none;">
+        <div class="wallet-line">
+          <p id="walletAddress"></p>
+          <button id="copyBtn" class="copy-btn" onclick="copyToClipboard(userAddress)">📋 Copy</button>
+        </div>
+        <p id="walletName"></p>
+        <p id="walletBalance"></p>
+        <p id="networkInfo"></p>
+        <canvas id="qrcode"></canvas>
+        <button id="refreshBtn" onclick="refreshBalance()">🔄 Refresh Balance</button>
+      </div>
     </div>
   </div>
 
@@ -173,11 +266,13 @@
   </div>
 
   <div id="send" class="tab-content">
-    <h3>Send Funds</h3>
+  <h3>Send Funds</h3>
+  <div class="form-center">
     <input type="text" id="sendToName" placeholder="Recipient Name">
     <input type="number" id="sendAmount" placeholder="Amount in ETH" step="0.0001">
     <button id="sendBtn">Send</button>
   </div>
+</div>
 
   <div id="find" class="tab-content">
     <h3>Find</h3>
