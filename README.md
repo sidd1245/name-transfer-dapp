@@ -1,6 +1,6 @@
 # 🌐 Name Transfer DApp
 
-A decentralized application (DApp) that lets users **register human-readable names** linked to their Ethereum wallet addresses, and transfer ETH using these names instead of long hexadecimal addresses.  
+A decentralized application (DApp) that lets users **register human-readable names** linked to their Ethereum wallet addresses, and transfer funds using these names instead of long hexadecimal addresses.  
 
 This project improves blockchain usability by making transactions simple, safe, and user-friendly.  
 

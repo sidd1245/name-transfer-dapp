@@ -115,7 +115,14 @@ function disconnectWallet() {
     const ctx = qr.getContext("2d");
     ctx.clearRect(0, 0, qr.width || 200, qr.height || 200);
   }
+
+  // 🔑 clear transaction history list
+  const historyList = document.getElementById("historyList");
+  if (historyList) {
+    historyList.innerHTML = "<li>⚠️ Wallet disconnected</li>";
+  }
 }
+
 
 
 // ---------- updateUI ----------
@@ -132,7 +139,7 @@ async function updateUI() {
     // Balance
     const balance = await provider.getBalance(userAddress);
     document.getElementById("walletBalance").innerText =
-      `Balance: ${ethers.formatEther(balance)} ETH`;
+      `Balance: ${ethers.formatEther(balance)} U2U`;
 
     // Name (use the ABI function nameOf)
     let name = "";
@@ -165,7 +172,7 @@ async function updateUI() {
       qrCanvas.width = 180;
       qrCanvas.height = 180;
       // clear first
-      try { qrCanvas.getContext("2d").clearRect(0, 0, qrCanvas.width, qrCanvas.height); } catch (e) {}
+      try { qrCanvas.getContext("2d").clearRect(0, 0, qrCanvas.width, qrCanvas.height); } catch (e) { }
       QRCode.toCanvas(qrCanvas, userAddress, { width: 180 }, function (error) {
         if (error) console.error("QR draw error", error);
       });
@@ -230,7 +237,7 @@ async function sendFunds() {
     value: ethers.parseEther(amount)
   });
   await tx.wait();
-  alert(`Sent ${amount} ETH to ${toName}`);
+  alert(`Sent ${amount} U2U to ${toName}`);
   updateUI();
 }
 
@@ -334,9 +341,9 @@ async function loadHistory(userAddress) {
       } else if (parsed.name === "SentByName") {
         const amount = ethers.formatEther(parsed.args.amount);
         if (parsed.args.from.toLowerCase() === userAddress.toLowerCase()) {
-          summary = `💸 Sent ${amount} ETH → ${parsed.args.toName}`;
+          summary = `💸 Sent ${amount} U2U → ${parsed.args.toName}`;
         } else if (parsed.args.toAddress.toLowerCase() === userAddress.toLowerCase()) {
-          summary = `💰 Received ${amount} ETH ← ${parsed.args.from}`;
+          summary = `💰 Received ${amount} U2U ← ${parsed.args.from}`;
         }
       }
 
@@ -353,13 +360,16 @@ async function loadHistory(userAddress) {
             try {
               const tx = await provider.getTransaction(log.transactionHash);
               const receipt = await provider.getTransactionReceipt(log.transactionHash);
+              const block = await provider.getBlock(receipt.blockNumber);
+              const txDate = new Date(block.timestamp * 1000).toLocaleString();
               detailsDiv.innerHTML = `
                 <strong>Tx Hash:</strong> <a href="https://etherscan.io/tx/${log.transactionHash}" target="_blank">${log.transactionHash}</a><br>
                 <strong>From:</strong> ${tx.from}<br>
                 <strong>To:</strong> ${tx.to || parsed.args.toAddress}<br>
                 <strong>Block:</strong> ${receipt.blockNumber}<br>
+                <strong>Timestamp:</strong> ${txDate}<br>
                 <strong>Gas Used:</strong> ${receipt.gasUsed.toString()}<br>
-                <strong>Value:</strong> ${ethers.formatEther(tx.value)} ETH
+                <strong>Value:</strong> ${ethers.formatEther(tx.value)} U2U
               `;
             } catch (e) {
               detailsDiv.innerHTML = "❌ Error loading details";
