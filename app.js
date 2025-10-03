@@ -230,16 +230,33 @@ async function sendFunds() {
   if (!userAddress) {
     return alert("⚠️ Please connect your wallet first.");
   }
+
   const toName = document.getElementById("sendToName").value.trim();
   const amount = document.getElementById("sendAmount").value.trim();
   if (!toName || !amount) return alert("Fill all fields");
-  const tx = await contract.transferByName(toName, {
-    value: ethers.parseEther(amount)
-  });
-  await tx.wait();
-  alert(`Sent ${amount} U2U to ${toName}`);
-  updateUI();
+
+  try {
+    // Resolve the name to an address first
+    const toAddress = await contract.resolveName(toName);
+
+    if (toAddress === ethers.ZeroAddress) {
+      return alert("❌ The recipient name is not registered.");
+    }
+
+    // Send funds
+    const tx = await contract.transferByName(toName, {
+      value: ethers.parseEther(amount)
+    });
+    await tx.wait();
+    alert(`✅ Sent ${amount} U2U to ${toName}`);
+    updateUI();
+
+  } catch (err) {
+    console.error("sendFunds error:", err);
+    alert("⚠️ Transaction failed: " + err.message);
+  }
 }
+
 
 async function resolveName() {
   const name = document.getElementById("resolveInput").value.trim();
