@@ -19,7 +19,7 @@ This project improves blockchain usability by making transactions simple, safe, 
 - **Transaction History**:  
   - Displays your past activity (sent & received)  
   - Expand each entry for detailed info (hash, block, gas, value, etc.)  
-- **Clipboard Copy Buttons** for quick sharing  
+- **Clipboard Copy Buttons** for quick sharing   
 
 ---
 
